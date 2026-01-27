@@ -2,8 +2,9 @@
 
 $__newAttributes = [];
 $__propNames = \Illuminate\View\ComponentAttributeBag::extractPropNames(([
-    'title' => '',
-    'icon' => ''
+    'title' => null,
+    'icon' => null,
+    'class' => null
 ]));
 
 foreach ($attributes->all() as $__key => $__value) {
@@ -20,8 +21,9 @@ unset($__propNames);
 unset($__newAttributes);
 
 foreach (array_filter(([
-    'title' => '',
-    'icon' => ''
+    'title' => null,
+    'icon' => null,
+    'class' => null
 ]), 'is_string', ARRAY_FILTER_USE_KEY) as $__key => $__value) {
     $$__key = $$__key ?? $__value;
 }
@@ -34,7 +36,7 @@ foreach ($attributes->all() as $__key => $__value) {
 
 unset($__defined_vars, $__key, $__value); ?>
 
-<div class="data-card fade-in">
+<div class="data-card fade-in <?php echo e($class); ?>">
     <?php if($title || $icon): ?>
         <div class="section-header px-4 pt-4 mb-0">
             <h3 class="heading-4 m-0">
@@ -49,5 +51,4 @@ unset($__defined_vars, $__key, $__value); ?>
         <?php echo e($slot); ?>
 
     </div>
-</div>
-<?php /**PATH C:\test\apk\mangkatan\resources\views/components/card.blade.php ENDPATH**/ ?>
+</div><?php /**PATH C:\test\apk\mangkatan\resources\views/components/card.blade.php ENDPATH**/ ?>

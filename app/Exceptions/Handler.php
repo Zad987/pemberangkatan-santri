@@ -2,7 +2,6 @@
 
 namespace App\Exceptions;
 
-use App\Helpers\ApiResponse;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Throwable;
 use Illuminate\Http\Request;
@@ -53,7 +52,11 @@ class Handler extends ExceptionHandler
         // Handle authentication exceptions
         $this->renderable(function (AuthenticationException $e, Request $request) {
             if ($request->expectsJson()) {
-                return response()->json(ApiResponse::unauthorized('You need to login to access this resource.'));
+                return response()->json([
+                    'success' => false,
+                    'message' => 'You need to login to access this resource.',
+                    'error' => 'Unauthorized'
+                ], 401);
             }
 
             return redirect()->guest(route('login'));
@@ -62,9 +65,11 @@ class Handler extends ExceptionHandler
         // Handle validation exceptions
         $this->renderable(function (ValidationException $e, Request $request) {
             if ($request->expectsJson()) {
-                return response()->json(
-                    ApiResponse::validationError($e->errors(), 'The given data was invalid.')
-                );
+                return response()->json([
+                    'success' => false,
+                    'message' => 'The given data was invalid.',
+                    'errors' => $e->errors()
+                ], 422);
             }
 
             return redirect()->back()
@@ -75,7 +80,11 @@ class Handler extends ExceptionHandler
         // Handle 404 errors
         $this->renderable(function (NotFoundHttpException $e, Request $request) {
             if ($request->expectsJson()) {
-                return response()->json(ApiResponse::notFound('The requested resource was not found.'));
+                return response()->json([
+                    'success' => false,
+                    'message' => 'The requested resource was not found.',
+                    'error' => 'Not Found'
+                ], 404);
             }
 
             return response()->view('errors.404', [], 404);
@@ -84,9 +93,11 @@ class Handler extends ExceptionHandler
         // Handle 405 errors
         $this->renderable(function (MethodNotAllowedHttpException $e, Request $request) {
             if ($request->expectsJson()) {
-                return response()->json(
-                    ApiResponse::error('Method Not Allowed', 'The HTTP method is not allowed for this endpoint.', 405)
-                );
+                return response()->json([
+                    'success' => false,
+                    'message' => 'The HTTP method is not allowed for this endpoint.',
+                    'error' => 'Method Not Allowed'
+                ], 405);
             }
 
             return redirect()->back()->with('error', 'Method not allowed.');
@@ -114,15 +125,13 @@ class Handler extends ExceptionHandler
             }
 
             if ($request->expectsJson()) {
-                return response()->json(
-                    ApiResponse::error(
-                        'Internal Server Error',
-                        app()->environment('local') 
-                            ? $e->getMessage() 
-                            : 'An unexpected error occurred. Please try again later.',
-                        500
-                    )
-                );
+                return response()->json([
+                    'success' => false,
+                    'message' => app()->environment('local') 
+                        ? $e->getMessage() 
+                        : 'An unexpected error occurred. Please try again later.',
+                    'error' => 'Internal Server Error'
+                ], 500);
             }
 
             // For admin users, show detailed error in local environment

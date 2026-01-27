@@ -9,3 +9,6 @@
     --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
         'Segoe UI Symbol', 'Noto Color Emoji';
 }
+
+/* Custom CSS for PPMHA Application */
+/* This file is intentionally left minimal since all styles are in public/css/style.css */

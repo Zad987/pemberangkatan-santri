@@ -10,8 +10,18 @@ use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
-// Root route - redirect to login
+// Root route - check authentication status and redirect accordingly
 Route::get('/', function () {
+    if (auth()->check()) {
+        $user = auth()->user();
+        if ($user->isAdmin()) {
+            return redirect()->route('dashboard.admin');
+        } elseif ($user->isDaerah()) {
+            return redirect()->route('dashboard.daerah');
+        } else {
+            return redirect()->route('dashboard.pengunjung');
+        }
+    }
     return redirect()->route('login');
 });
 
@@ -24,12 +34,16 @@ Route::get('/logout', function () {
 });
 Route::get('/jadi-pengunjung', [AuthController::class, 'becomeVisitor'])->name('jadi.pengunjung');
 
+// Public Routes for Visitors
+Route::middleware(['rate.limit:api'])->group(function () {
+    Route::get('/dashboard/pengunjung', [DashboardController::class, 'visitor'])->name('dashboard.pengunjung');
+    Route::get('/keseluruhan/peserta', [DashboardController::class, 'keseluruhan'])->name('keseluruhan.peserta');
+    Route::get('/detail/peserta/{id}', [ParticipantController::class, 'show'])->name('detail.peserta');
+});
+
 // Protected Routes - Require Authentication
 Route::middleware(['auth', 'rate.limit:api'])->group(function () {
     Route::middleware(['check.session'])->group(function () {
-        Route::get('/dashboard/pengunjung', [DashboardController::class, 'visitor'])->name('dashboard.pengunjung');
-        Route::get('/keseluruhan/peserta', [DashboardController::class, 'keseluruhan'])->name('keseluruhan.peserta');
-        Route::get('/detail/peserta/{id}', [ParticipantController::class, 'show'])->name('detail.peserta');
 
         // Admin-only routes
         Route::middleware(['admin'])->group(function () {

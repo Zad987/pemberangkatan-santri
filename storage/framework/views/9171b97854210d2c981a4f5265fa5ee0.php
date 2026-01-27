@@ -3,8 +3,8 @@
 $__newAttributes = [];
 $__propNames = \Illuminate\View\ComponentAttributeBag::extractPropNames(([
     'title' => '',
-    'icon' => '',
-    'action' => ''
+    'subtitle' => null,
+    'actions' => null
 ]));
 
 foreach ($attributes->all() as $__key => $__value) {
@@ -22,8 +22,8 @@ unset($__newAttributes);
 
 foreach (array_filter(([
     'title' => '',
-    'icon' => '',
-    'action' => ''
+    'subtitle' => null,
+    'actions' => null
 ]), 'is_string', ARRAY_FILTER_USE_KEY) as $__key => $__value) {
     $$__key = $$__key ?? $__value;
 }
@@ -36,16 +36,17 @@ foreach ($attributes->all() as $__key => $__value) {
 
 unset($__defined_vars, $__key, $__value); ?>
 
-<div class="section-header fade-in">
-    <div>
-        <?php if($icon): ?>
-            <span style="margin-right: 8px;"><?php echo e($icon); ?></span>
-        <?php endif; ?>
-        <h2><?php echo e($title ?: $slot); ?></h2>
-    </div>
-    <?php if($action): ?>
-        <?php echo e($action); ?>
+<div class="section-header">
+    <h2 class="section-title">
+        <?php echo e($title); ?>
 
-    <?php endif; ?>
-</div>
-<?php /**PATH C:\test\apk\mangkatan\resources\views/components/section-header.blade.php ENDPATH**/ ?>
+        <?php if($subtitle): ?>
+            <small class="text-muted d-block mt-1"><?php echo e($subtitle); ?></small>
+        <?php endif; ?>
+    </h2>
+    
+    <div class="section-actions">
+        <?php echo e($actions ?? ''); ?>
+
+    </div>
+</div><?php /**PATH C:\test\apk\mangkatan\resources\views/components/section-header.blade.php ENDPATH**/ ?>

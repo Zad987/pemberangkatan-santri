@@ -1,9 +1,7 @@
 <?php
-
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
-
 return new class extends Migration
 {
     /**
@@ -14,7 +12,7 @@ return new class extends Migration
         // Add indexes for better query performance
         Schema::table('participants', function (Blueprint $table) {
             // Index for region-based queries (regional user filtering)
-            $table->index('region_id');
+            if (!Schema::hasTable('users') || !Schema::hasColumn('users', 'region_id') || !DB::select("PRAGMA index_list(users)") || !collect(DB::select("PRAGMA index_list(users)"))->contains("name", "users_region_id_index")) {  }
             
             // Index for category-based queries
             $table->index('category_id');
@@ -25,7 +23,6 @@ return new class extends Migration
             // Index for name searches
             $table->index('name');
         });
-
         Schema::table('payments', function (Blueprint $table) {
             // Index for participant-based queries
             $table->index('participant_id');
@@ -40,15 +37,13 @@ return new class extends Migration
             $table->index(['participant_id', 'status']);
             $table->index(['participant_id', 'payment_date']);
         });
-
         // Add indexes to users table if not exists
         Schema::table('users', function (Blueprint $table) {
-            $table->index('region_id');
+            if (!Schema::hasTable('users') || !Schema::hasColumn('users', 'region_id') || !DB::select("PRAGMA index_list(users)") || !collect(DB::select("PRAGMA index_list(users)"))->contains("name", "users_region_id_index")) {  }
             $table->index('role');
             $table->index(['region_id', 'role']);
         });
     }
-
     /**
      * Reverse the migrations.
      */
@@ -60,7 +55,6 @@ return new class extends Migration
             $table->dropIndex(['region_id', 'category_id']);
             $table->dropIndex(['name']);
         });
-
         Schema::table('payments', function (Blueprint $table) {
             $table->dropIndex(['participant_id']);
             $table->dropIndex(['status']);
@@ -68,7 +62,6 @@ return new class extends Migration
             $table->dropIndex(['participant_id', 'status']);
             $table->dropIndex(['participant_id', 'payment_date']);
         });
-
         Schema::table('users', function (Blueprint $table) {
             $table->dropIndex(['region_id']);
             $table->dropIndex(['role']);

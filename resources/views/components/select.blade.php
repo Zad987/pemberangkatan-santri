@@ -1,15 +1,18 @@
 @props([
-    'label' => '',
-    'options' => [],
+    'id' => null,
+    'name' => null,
+    'label' => null,
+    'placeholder' => null,
     'required' => false,
-    'helper' => '',
+    'disabled' => false,
     'error' => null,
-    'placeholder' => 'Pilih...'
+    'options' => [],
+    'value' => null
 ])
 
-<div class="form-group {{ $error ? 'has-error' : '' }}">
+<div class="form-group">
     @if($label)
-        <label class="form-label" for="{{ $attributes->get('id') ?? '' }}">
+        <label for="{{ $id }}" class="form-label">
             {{ $label }}
             @if($required)
                 <span class="text-danger">*</span>
@@ -17,21 +20,24 @@
         </label>
     @endif
     
-    <div class="input-wrapper">
-        <select 
-            class="form-input {{ $error ? 'is-invalid' : '' }}"
-            {{ $required ? 'required' : '' }}
-            {{ $attributes }}>
+    <select 
+        id="{{ $id }}"
+        name="{{ $name }}"
+        {{ $required ? 'required' : '' }}
+        {{ $disabled ? 'disabled' : '' }}
+        class="form-control {{ $error ? 'is-invalid' : '' }}"
+        {{ $attributes }}
+    >
+        @if($placeholder)
             <option value="">{{ $placeholder }}</option>
-            @foreach($options as $value => $text)
-                <option value="{{ $value }}">{{ $text }}</option>
-            @endforeach
-        </select>
-    </div>
+        @endif
+        
+        {{ $slot }}
+    </select>
     
     @if($error)
-        <small class="text-danger mt-1 d-block">{{ $error }}</small>
-    @elseif($helper)
-        <small class="text-muted mt-1 d-block">{{ $helper }}</small>
+        <div class="invalid-feedback">
+            {{ $error }}
+        </div>
     @endif
 </div>

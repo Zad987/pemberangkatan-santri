@@ -1,34 +1,17 @@
 @props([
-    'type' => 'button',
+    'buttonType' => 'button',
     'size' => 'md',
+    'variant' => 'primary',
+    'block' => false,
     'disabled' => false,
     'loading' => false,
-    'block' => false,
-    'buttonType' => 'button'
 ])
 
-@php
-    $sizeClass = match($size) {
-        'sm' => 'btn-sm',
-        'lg' => 'btn-lg',
-        default => ''
-    };
-    $blockClass = $block ? 'w-full' : '';
-    $typeClass = match($type) {
-        'danger' => 'btn-danger',
-        'warning' => 'btn-warning',
-        'success' => 'btn-success',
-        'secondary' => 'btn-secondary',
-        'outline' => 'btn-outline',
-        default => 'btn-primary'
-    };
-@endphp
-
 <button 
-    type="{{ $buttonType }}" 
-    class="{{ $typeClass }} {{ $sizeClass }} {{ $blockClass }} {{ $loading ? 'btn-loading' : '' }}"
+    type="{{ $buttonType }}"
     {{ $disabled || $loading ? 'disabled' : '' }}
-    {{ $attributes }}>
+    {{ $attributes->merge(['class' => "btn-$variant btn-$size" . ($block ? ' w-full' : '') . ($loading ? ' btn-loading' : '') . ' btn']) }}
+>
     @if($loading)
         <span class="spinner-border"></span>
     @endif

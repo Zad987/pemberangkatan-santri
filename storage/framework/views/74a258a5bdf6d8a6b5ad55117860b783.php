@@ -29,7 +29,7 @@
             <div class="user-profile-mini">
                 <div class="text-right d-none d-md-block">
                     <div class="font-bold text-sm"><?php echo e(auth()->user()->name); ?></div>
-                    <div class="text-xs text-muted"><?php echo e(ucfirst(auth()->user()->role)); ?></div>
+                    <div class="text-xs text-muted"><?php echo e(ucfirst(auth()->user()->role->value ?? auth()->user()->role)); ?></div>
                 </div>
                 <div class="avatar-circle">
                     <?php echo e(substr(auth()->user()->name, 0, 1)); ?>

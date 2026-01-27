@@ -155,7 +155,7 @@ return [
     |
     */
 
-    'domain' => env('SESSION_DOMAIN'),
+    'domain' => env('SESSION_DOMAIN', null), // Allow any domain for development
 
     /*
     |--------------------------------------------------------------------------
@@ -168,7 +168,7 @@ return [
     |
     */
 
-    'secure' => env('SESSION_SECURE_COOKIE', true), // Force HTTPS
+    'secure' => env('SESSION_SECURE_COOKIE', false), // Allow HTTP for development
 
     /*
     |--------------------------------------------------------------------------
@@ -198,7 +198,7 @@ return [
     |
     */
 
-    'same_site' => env('SESSION_SAME_SITE', 'strict'), // More restrictive than 'lax'
+    'same_site' => env('SESSION_SAME_SITE', 'lax'), // Changed from 'strict' to 'lax' for better compatibility
 
     /*
     |--------------------------------------------------------------------------

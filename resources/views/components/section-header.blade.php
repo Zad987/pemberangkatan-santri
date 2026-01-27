@@ -1,17 +1,18 @@
 @props([
     'title' => '',
-    'icon' => '',
-    'action' => ''
+    'subtitle' => null,
+    'actions' => null
 ])
 
-<div class="section-header fade-in">
-    <div>
-        @if($icon)
-            <span style="margin-right: 8px;">{{ $icon }}</span>
+<div class="section-header">
+    <h2 class="section-title">
+        {{ $title }}
+        @if($subtitle)
+            <small class="text-muted d-block mt-1">{{ $subtitle }}</small>
         @endif
-        <h2>{{ $title ?: $slot }}</h2>
+    </h2>
+    
+    <div class="section-actions">
+        {{ $actions ?? '' }}
     </div>
-    @if($action)
-        {{ $action }}
-    @endif
 </div>

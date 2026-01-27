@@ -71,7 +71,7 @@ return new class extends Migration
         $users = DB::select('SELECT id, name, password, remember_token, role, region_id, phone, last_login_at, last_login_ip, is_active, current_session_id, created_at, updated_at FROM users');
         
         // Drop the existing table
-        DB::statement('DROP TABLE users_backup');
+        
         DB::statement('ALTER TABLE users RENAME TO users_backup');
         
         // Create the new table without email
@@ -115,6 +115,6 @@ return new class extends Migration
         }
         
         // Drop backup table
-        DB::statement('DROP TABLE users_backup');
+        
     }
 };

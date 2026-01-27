@@ -37,5 +37,4 @@ unset($__defined_vars, $__key, $__value); ?>
         <div class="empty-state-icon">📭</div>
         <div class="empty-state-text"><?php echo e($slot ?? 'Tidak ada data'); ?></div>
     </td>
-</tr>
-<?php /**PATH C:\test\apk\mangkatan\resources\views/components/empty-row.blade.php ENDPATH**/ ?>
+</tr><?php /**PATH C:\test\apk\mangkatan\resources\views/components/empty-row.blade.php ENDPATH**/ ?>

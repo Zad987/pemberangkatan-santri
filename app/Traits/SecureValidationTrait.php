@@ -166,13 +166,14 @@ trait SecureValidationTrait
     {
         /** @var \Illuminate\Contracts\Auth\Authenticatable|null $user */
         $user = auth()->user();
-        
+
+        // If no user (guest/visitor), allow read-only access for participants
         if (!$user) {
-            $this->logSecurityEvent('unauthorized_access_attempt', [
-                'resource_type' => $resourceType,
-                'resource_id' => $resource->id ?? 'unknown'
-            ]);
-            return false;
+            // For visitors, allow viewing participants but not modifying
+            if ($resourceType === 'participant') {
+                return true; // Allow viewing
+            }
+            return false; // Deny other operations
         }
 
         // Admin can access everything

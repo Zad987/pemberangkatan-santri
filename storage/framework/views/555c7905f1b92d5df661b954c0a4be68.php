@@ -2,12 +2,12 @@
 
 $__newAttributes = [];
 $__propNames = \Illuminate\View\ComponentAttributeBag::extractPropNames(([
-    'type' => 'button',
+    'buttonType' => 'button',
     'size' => 'md',
+    'variant' => 'primary',
+    'block' => false,
     'disabled' => false,
     'loading' => false,
-    'block' => false,
-    'buttonType' => 'button'
 ]));
 
 foreach ($attributes->all() as $__key => $__value) {
@@ -24,12 +24,12 @@ unset($__propNames);
 unset($__newAttributes);
 
 foreach (array_filter(([
-    'type' => 'button',
+    'buttonType' => 'button',
     'size' => 'md',
+    'variant' => 'primary',
+    'block' => false,
     'disabled' => false,
     'loading' => false,
-    'block' => false,
-    'buttonType' => 'button'
 ]), 'is_string', ARRAY_FILTER_USE_KEY) as $__key => $__value) {
     $$__key = $$__key ?? $__value;
 }
@@ -42,33 +42,16 @@ foreach ($attributes->all() as $__key => $__value) {
 
 unset($__defined_vars, $__key, $__value); ?>
 
-<?php
-    $sizeClass = match($size) {
-        'sm' => 'btn-sm',
-        'lg' => 'btn-lg',
-        default => ''
-    };
-    $blockClass = $block ? 'w-full' : '';
-    $typeClass = match($type) {
-        'danger' => 'btn-danger',
-        'warning' => 'btn-warning',
-        'success' => 'btn-success',
-        'secondary' => 'btn-secondary',
-        'outline' => 'btn-outline',
-        default => 'btn-primary'
-    };
-?>
-
 <button 
-    type="<?php echo e($buttonType); ?>" 
-    class="<?php echo e($typeClass); ?> <?php echo e($sizeClass); ?> <?php echo e($blockClass); ?> <?php echo e($loading ? 'btn-loading' : ''); ?>"
+    type="<?php echo e($buttonType); ?>"
     <?php echo e($disabled || $loading ? 'disabled' : ''); ?>
 
-    <?php echo e($attributes); ?>>
+    <?php echo e($attributes->merge(['class' => "btn-$variant btn-$size" . ($block ? ' w-full' : '') . ($loading ? ' btn-loading' : '') . ' btn'])); ?>
+
+>
     <?php if($loading): ?>
         <span class="spinner-border"></span>
     <?php endif; ?>
     <?php echo e($slot); ?>
 
-</button>
-<?php /**PATH C:\test\apk\mangkatan\resources\views/components/button.blade.php ENDPATH**/ ?>
+</button><?php /**PATH C:\test\apk\mangkatan\resources\views/components/button.blade.php ENDPATH**/ ?>

@@ -1,15 +1,19 @@
 @props([
-    'label' => '',
+    'id' => null,
+    'name' => null,
+    'label' => null,
+    'placeholder' => null,
     'required' => false,
-    'helper' => '',
+    'disabled' => false,
+    'readonly' => false,
     'error' => null,
-    'placeholder' => '',
-    'rows' => 4
+    'rows' => 4,
+    'value' => null
 ])
 
-<div class="form-group {{ $error ? 'has-error' : '' }}">
+<div class="form-group">
     @if($label)
-        <label class="form-label" for="{{ $attributes->get('id') ?? '' }}">
+        <label for="{{ $id }}" class="form-label">
             {{ $label }}
             @if($required)
                 <span class="text-danger">*</span>
@@ -17,18 +21,21 @@
         </label>
     @endif
     
-    <div class="input-wrapper">
-        <textarea 
-            class="form-input {{ $error ? 'is-invalid' : '' }}"
-            rows="{{ $rows }}"
-            {{ $required ? 'required' : '' }}
-            placeholder="{{ $placeholder }}"
-            {{ $attributes }}>{{ $slot }}</textarea>
-    </div>
+    <textarea 
+        id="{{ $id }}"
+        name="{{ $name }}"
+        rows="{{ $rows }}"
+        placeholder="{{ $placeholder }}"
+        {{ $required ? 'required' : '' }}
+        {{ $disabled ? 'disabled' : '' }}
+        {{ $readonly ? 'readonly' : '' }}
+        class="form-control {{ $error ? 'is-invalid' : '' }}"
+        {{ $attributes }}
+    >{{ old($name, $value) }}</textarea>
     
     @if($error)
-        <small class="text-danger mt-1 d-block">{{ $error }}</small>
-    @elseif($helper)
-        <small class="text-muted mt-1 d-block">{{ $helper }}</small>
+        <div class="invalid-feedback">
+            {{ $error }}
+        </div>
     @endif
 </div>

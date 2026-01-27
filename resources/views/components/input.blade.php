@@ -1,34 +1,68 @@
 @props([
-    'label' => '',
+    'id' => null,
+    'name' => null,
     'type' => 'text',
+    'label' => null,
+    'placeholder' => null,
+    'value' => null,
     'required' => false,
-    'helper' => '',
+    'autofocus' => false,
+    'disabled' => false,
+    'readonly' => false,
     'error' => null,
-    'placeholder' => ''
+    'help' => null,
+    'size' => 'md',
+    'icon' => null,
+    'iconPosition' => 'left'
 ])
 
-<div class="form-group {{ $error ? 'has-error' : '' }}">
+<div class="form-group">
     @if($label)
-        <label class="form-label" for="{{ $attributes->get('id') ?? '' }}">
+        <label for="{{ $id }}" class="form-label">
             {{ $label }}
             @if($required)
                 <span class="text-danger">*</span>
             @endif
         </label>
     @endif
-    
-    <div class="input-wrapper">
-        <input 
+
+    <div class="input-wrapper {{ $icon ? 'has-icon' : '' }}">
+        @if($icon && $iconPosition === 'left')
+            <span class="input-icon left">
+                <i class="{{ $icon }}"></i>
+            </span>
+        @endif
+
+        <input
+            id="{{ $id }}"
+            name="{{ $name }}"
             type="{{ $type }}"
-            class="form-input {{ $error ? 'is-invalid' : '' }}"
-            {{ $required ? 'required' : '' }}
+            value="{{ old($name, $value) }}"
             placeholder="{{ $placeholder }}"
-            {{ $attributes }}>
+            {{ $required ? 'required' : '' }}
+            {{ $autofocus ? 'autofocus' : '' }}
+            {{ $disabled ? 'disabled' : '' }}
+            {{ $readonly ? 'readonly' : '' }}
+            class="form-control {{ $error ? 'is-invalid' : '' }} {{ $size === 'lg' ? 'form-control-lg' : ($size === 'sm' ? 'form-control-sm' : '') }}"
+            {{ $attributes }}
+        >
+
+        @if($icon && $iconPosition === 'right')
+            <span class="input-icon right">
+                <i class="{{ $icon }}"></i>
+            </span>
+        @endif
     </div>
-    
+
     @if($error)
-        <small class="text-danger mt-1 d-block">{{ $error }}</small>
-    @elseif($helper)
-        <small class="text-muted mt-1 d-block">{{ $helper }}</small>
+        <div class="invalid-feedback">
+            {{ $error }}
+        </div>
+    @endif
+
+    @if($help)
+        <small class="form-text text-muted">
+            {{ $help }}
+        </small>
     @endif
 </div>

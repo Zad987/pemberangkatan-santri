@@ -40,6 +40,7 @@ class ParticipantController extends Controller
                 'name' => trim($request->name),
                 'region_id' => $request->region_id,
                 'category_id' => $request->category_id,
+                'created_by' => $user->id,
             ]);
 
             // Log audit trail
@@ -56,8 +57,8 @@ class ParticipantController extends Controller
                 'ip_address' => $request->ip()
             ]);
 
-            // Clear the regional dashboard cache to show the new participant immediately
-            \Illuminate\Support\Facades\Cache::forget('daerah_dashboard_' . $user->region_id);
+            // Clear dashboard caches to show the new participant immediately
+            $this->clearDashboardCaches($request->region_id);
 
             return redirect()->route('dashboard.daerah')->with('success', 'Peserta berhasil ditambahkan');
         } catch (\Exception $e) {
@@ -400,12 +401,16 @@ class ParticipantController extends Controller
                 }
             }
 
-            // Create payment record (status will be determined by model accessor)
+            // Create payment record with appropriate status
+            $participant->refresh(); // Refresh to include the new payment in calculation
+            $isNowFullyPaid = ($participant->total_paid + $amount) >= $participant->category->price;
+
             $payment = Payment::create([
                 'participant_id' => $participant->id,
                 'amount' => $amount,
                 'payment_date' => $request->payment_date,
                 'notes' => $request->notes ?? null,
+                'status' => $isNowFullyPaid ? 'lunas' : 'belum',
             ]);
 
             // Log audit trail for payment
@@ -427,8 +432,6 @@ class ParticipantController extends Controller
             // Clear dashboard caches to show the payment update immediately
             $this->clearDashboardCaches($participant->region_id);
 
-            // Check if payment completes the balance after recording
-            $participant->refresh(); // Refresh to get updated payment status
             $message = $participant->payment_status === 'lunas'
                 ? 'Pembayaran berhasil! Peserta telah melunasi semua pembayaran.'
                 : 'Pembayaran berhasil! Masih ada sisa pembayaran.';
@@ -451,7 +454,7 @@ class ParticipantController extends Controller
     {
         try {
             $payment = Payment::with('participant')->findOrFail($id);
-            
+
             // Check authorization using trait method
             if (!$this->authorizeAccess($payment, 'payment')) {
                 abort(403);
@@ -478,6 +481,16 @@ class ParticipantController extends Controller
             $participant = $payment->participant;
             $payment->delete();
 
+            // Reload participant with updated payments
+            $participant->load('payments');
+
+            // Update remaining payment statuses based on overall payment status
+            if ($participant->payment_status === 'lunas') {
+                $participant->payments()->update(['status' => 'lunas']);
+            } else {
+                $participant->payments()->update(['status' => 'belum']);
+            }
+
             Log::info('Payment deleted successfully', [
                 'payment_id' => $id,
                 'deleted_by' => Auth::id(),
@@ -495,8 +508,27 @@ class ParticipantController extends Controller
                 'user_id' => Auth::id(),
                 'ip_address' => request()->ip()
             ]);
-            
+
             return redirect()->back()->with('error', 'Gagal menghapus pembayaran.');
         }
+    }
+
+    /**
+     * Clear dashboard caches for a specific region
+     *
+     * @param int $regionId
+     * @return void
+     */
+    private function clearDashboardCaches($regionId)
+    {
+        // Clear admin dashboard cache (affects all admins)
+        \Illuminate\Support\Facades\Cache::forget('admin_dashboard_' . Auth::id());
+
+        // Clear regional dashboard cache for the specific region
+        \Illuminate\Support\Facades\Cache::forget('daerah_dashboard_' . $regionId);
+
+        // Clear visitor/keseluruhan caches
+        \Illuminate\Support\Facades\Cache::forget('visitor_dashboard');
+        \Illuminate\Support\Facades\Cache::forget('keseluruhan_participants');
     }
 }
