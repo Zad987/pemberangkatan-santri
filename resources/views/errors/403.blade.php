@@ -11,7 +11,7 @@
     <div class="flex-actions w-full" style="justify-content: center;">
         @auth
             <a href="{{ url()->previous() }}" class="btn-primary" style="background: var(--text-muted);">Kembali</a>
-            <a href="{{ route('dashboard.' . Auth::user()->role) }}" class="btn-primary">Dashboard</a>
+            <a href="{{ route('dashboard.' . (Auth::user()->role->value == 'induk' ? 'admin' : (Auth::user()->role->value == 'daerah' ? 'daerah' : 'pengunjung'))) }}" class="btn-primary">Dashboard</a>
         @else
             <a href="{{ route('login') }}" class="btn-primary">Halaman Login</a>
         @endauth

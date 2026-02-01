@@ -43,7 +43,10 @@
     <?php if(auth()->guard()->check()): ?>
     <aside class="sidebar">
         <div class="sidebar-nav">
-            <?php if(auth()->user()->role === 'induk'): ?>
+            <?php
+                $userRoleValue = (auth()->user()->role instanceof \App\Enums\UserRole) ? auth()->user()->role->value : auth()->user()->role;
+            ?>
+            <?php if($userRoleValue === 'induk'): ?>
                 <a href="<?php echo e(route('dashboard.admin')); ?>" class="sidebar-item <?php echo e(request()->routeIs('dashboard.admin') ? 'active' : ''); ?>">
                     <span class="sidebar-icon">📊</span>
                     <span>Dashboard</span>
@@ -64,7 +67,7 @@
                     <span class="sidebar-icon">⚙️</span>
                     <span>Pengaturan</span>
                 </a>
-            <?php elseif(auth()->user()->role === 'daerah'): ?>
+            <?php elseif($userRoleValue === 'daerah'): ?>
                 <a href="<?php echo e(route('dashboard.daerah')); ?>" class="sidebar-item <?php echo e(request()->routeIs('dashboard.daerah') ? 'active' : ''); ?>">
                     <span class="sidebar-icon">🏠</span>
                     <span>Dashboard</span>
@@ -107,7 +110,10 @@
 
     <?php if(auth()->guard()->check()): ?>
     <div class="bottom-nav">
-        <?php if(auth()->user()->role === 'induk'): ?>
+        <?php
+            $userRoleValue = (auth()->user()->role instanceof \App\Enums\UserRole) ? auth()->user()->role->value : auth()->user()->role;
+        ?>
+        <?php if($userRoleValue === 'induk'): ?>
             <a href="<?php echo e(route('dashboard.admin')); ?>" class="nav-item <?php echo e(request()->routeIs('dashboard.admin') ? 'active' : ''); ?>">
                 <span class="nav-icon">📊</span>
                 <span class="nav-label">Home</span>
@@ -120,7 +126,7 @@
                 <span class="nav-icon">⚙️</span>
                 <span class="nav-label">Profil</span>
             </a>
-        <?php elseif(auth()->user()->role === 'daerah'): ?>
+        <?php elseif($userRoleValue === 'daerah'): ?>
             <a href="<?php echo e(route('dashboard.daerah')); ?>" class="nav-item <?php echo e(request()->routeIs('dashboard.daerah') ? 'active' : ''); ?>">
                 <span class="nav-icon">🏠</span>
                 <span class="nav-label">Home</span>

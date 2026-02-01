@@ -104,17 +104,56 @@ class User extends Authenticatable
     // Methods
     public function isAdmin()
     {
-        return $this->role === UserRole::INDUK;
+        // Handle both direct enum comparison and string comparison
+        if ($this->role instanceof UserRole) {
+            return $this->role->value === 'induk';
+        }
+        // Convert string to lowercase to handle any case variations
+        $roleValue = is_string($this->role) ? strtolower($this->role) : $this->role;
+        return $roleValue === 'induk' || $roleValue === 'INDUK' || $this->role === UserRole::INDUK;
     }
 
     public function isDaerah()
     {
-        return $this->role === UserRole::DAERAH;
+        // Handle both direct enum comparison and string comparison
+        if ($this->role instanceof UserRole) {
+            return $this->role->value === 'daerah';
+        }
+        // Convert string to lowercase to handle any case variations
+        $roleValue = is_string($this->role) ? strtolower($this->role) : $this->role;
+        return $roleValue === 'daerah' || $roleValue === 'DAERAH' || $this->role === UserRole::DAERAH;
     }
 
     public function isUmum()
     {
-        return $this->role === UserRole::UMUM;
+        // Handle both direct enum comparison and string comparison
+        if ($this->role instanceof UserRole) {
+            return $this->role->value === 'umum';
+        }
+        // Convert string to lowercase to handle any case variations
+        $roleValue = is_string($this->role) ? strtolower($this->role) : $this->role;
+        return $roleValue === 'umum' || $roleValue === 'UMUM' || $this->role === UserRole::UMUM;
+    }
+
+    public function getRoleAttribute($value)
+    {
+        // Ensure proper enum handling
+        if (empty($value)) {
+            return null;
+        }
+        
+        // If it's already an enum instance, return it
+        if ($value instanceof UserRole) {
+            return $value;
+        }
+        
+        // If it's a string, try to convert to enum
+        try {
+            return UserRole::from($value);
+        } catch (\ValueError $e) {
+            // If conversion fails, return the raw value
+            return $value;
+        }
     }
 
     public function isActive()

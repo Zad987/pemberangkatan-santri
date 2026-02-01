@@ -38,7 +38,7 @@ class SettingsController extends Controller
     public function update(Request $request)
     {
         // Only admins can update settings
-        if (!Auth::user() || Auth::user()->role !== 'induk') {
+        if (!Auth::user() || !Auth::user()->isAdmin()) {
             abort(403);
         }
 

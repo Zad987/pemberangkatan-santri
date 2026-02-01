@@ -149,7 +149,10 @@ abstract class Controller extends BaseController
             'manage_settings' => ['induk'],
         ];
 
-        return isset($permissions[$permission]) && in_array($user->role, $permissions[$permission]);
+        // Get the role value (handle enum)
+        $roleValue = $user->role instanceof \App\Enums\UserRole ? $user->role->value : $user->role;
+
+        return isset($permissions[$permission]) && in_array($roleValue, $permissions[$permission]);
     }
 
     /**

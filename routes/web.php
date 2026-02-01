@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CategoryController;
@@ -93,3 +93,17 @@ Route::middleware(['auth', 'rate.limit:api'])->group(function () {
         });
     });
 });
+Route::get('/test', function () { return view('test'); });
+
+
+Route::get('/test2', [TestController::class, 'index']);
+
+
+Route::get('/test3', function () { return 'Hello World'; });
+
+Route::get('/test-user', function () { return view('test-user'); });
+
+Route::get('/test-user-no-csrf', function () { return view('test-user'); })->withoutMiddleware([\App\Http\Middleware\VerifyCsrfToken::class]);
+
+Route::get('/simple-test', function () { return view('simple-test'); });
+

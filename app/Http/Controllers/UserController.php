@@ -103,7 +103,7 @@ class UserController extends Controller
     {
         try {
             // Authorization check
-            if (Auth::user()->role !== 'induk' && Auth::id() !== (int)$id) {
+            if (!Auth::user()->isAdmin() && Auth::id() !== (int)$id) {
                 abort(403, 'Unauthorized to update user');
             }
             
@@ -134,7 +134,7 @@ class UserController extends Controller
     {
         try {
             // Authorization
-            if (Auth::user()->role !== 'induk' && Auth::id() !== (int)$id) {
+            if (!Auth::user()->isAdmin() && Auth::id() !== (int)$id) {
                 abort(403, 'Unauthorized to update password');
             }
 
@@ -166,7 +166,7 @@ class UserController extends Controller
     {
         try {
             // Authorization check
-            if (Auth::user()->role !== 'induk') {
+            if (!Auth::user()->isAdmin()) {
                 abort(403, 'Unauthorized to delete user');
             }
             

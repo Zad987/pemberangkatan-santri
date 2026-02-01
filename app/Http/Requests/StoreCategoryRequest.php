@@ -32,6 +32,11 @@ class StoreCategoryRequest extends FormRequest
                 'unique:categories,name',
                 'regex:/^[a-zA-Z0-9\s\-\.]+$/'
             ],
+            'price' => [
+                'required',
+                'numeric',
+                'min:0'
+            ],
             'description' => [
                 'nullable',
                 'string',
@@ -54,6 +59,9 @@ class StoreCategoryRequest extends FormRequest
             'name.min' => 'Nama kategori minimal 3 karakter.',
             'name.unique' => 'Nama kategori sudah ada.',
             'name.regex' => 'Nama kategori hanya boleh mengandung huruf, angka, spasi, tanda hubung, dan titik.',
+            'price.required' => 'Harga kategori wajib diisi.',
+            'price.numeric' => 'Harga kategori harus berupa angka.',
+            'price.min' => 'Harga kategori tidak boleh negatif.',
             'description.max' => 'Deskripsi maksimal 1000 karakter.',
         ];
     }
@@ -67,6 +75,7 @@ class StoreCategoryRequest extends FormRequest
     {
         return [
             'name' => 'Nama Kategori',
+            'price' => 'Harga Kategori',
             'description' => 'Deskripsi',
         ];
     }

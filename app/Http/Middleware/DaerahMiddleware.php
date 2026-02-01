@@ -19,7 +19,10 @@ class DaerahMiddleware
             return redirect()->route('login');
         }
 
-        if (!\Illuminate\Support\Facades\Auth::user()->isDaerah()) {
+        $user = \Illuminate\Support\Facades\Auth::user();
+        
+        // Check if user is daerah using the improved method
+        if (!$user->isDaerah()) {
             abort(403, 'Unauthorized action.');
         }
 

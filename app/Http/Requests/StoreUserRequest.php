@@ -32,7 +32,7 @@ class StoreUserRequest extends FormRequest
                 'regex:/^[a-zA-Z\s\-\.]+$/' // Only letters, spaces, hyphens, and dots
             ],
             'username' => [
-                'required',
+                'nullable',
                 'string',
                 'max:255',
                 'min:3',

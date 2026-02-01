@@ -41,7 +41,10 @@
     @auth
     <aside class="sidebar">
         <div class="sidebar-nav">
-            @if(auth()->user()->role === 'induk')
+            @php
+                $userRoleValue = (auth()->user()->role instanceof \App\Enums\UserRole) ? auth()->user()->role->value : auth()->user()->role;
+            @endphp
+            @if($userRoleValue === 'induk')
                 <a href="{{ route('dashboard.admin') }}" class="sidebar-item {{ request()->routeIs('dashboard.admin') ? 'active' : '' }}">
                     <span class="sidebar-icon">📊</span>
                     <span>Dashboard</span>
@@ -62,7 +65,7 @@
                     <span class="sidebar-icon">⚙️</span>
                     <span>Pengaturan</span>
                 </a>
-            @elseif(auth()->user()->role === 'daerah')
+            @elseif($userRoleValue === 'daerah')
                 <a href="{{ route('dashboard.daerah') }}" class="sidebar-item {{ request()->routeIs('dashboard.daerah') ? 'active' : '' }}">
                     <span class="sidebar-icon">🏠</span>
                     <span>Dashboard</span>
@@ -105,7 +108,10 @@
 
     @auth
     <div class="bottom-nav">
-        @if(auth()->user()->role === 'induk')
+        @php
+            $userRoleValue = (auth()->user()->role instanceof \App\Enums\UserRole) ? auth()->user()->role->value : auth()->user()->role;
+        @endphp
+        @if($userRoleValue === 'induk')
             <a href="{{ route('dashboard.admin') }}" class="nav-item {{ request()->routeIs('dashboard.admin') ? 'active' : '' }}">
                 <span class="nav-icon">📊</span>
                 <span class="nav-label">Home</span>
@@ -118,7 +124,7 @@
                 <span class="nav-icon">⚙️</span>
                 <span class="nav-label">Profil</span>
             </a>
-        @elseif(auth()->user()->role === 'daerah')
+        @elseif($userRoleValue === 'daerah')
             <a href="{{ route('dashboard.daerah') }}" class="nav-item {{ request()->routeIs('dashboard.daerah') ? 'active' : '' }}">
                 <span class="nav-icon">🏠</span>
                 <span class="nav-label">Home</span>

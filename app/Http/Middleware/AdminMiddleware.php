@@ -19,7 +19,10 @@ class AdminMiddleware
             return redirect()->route('login');
         }
 
-        if (!\Illuminate\Support\Facades\Auth::user()->isAdmin()) {
+        $user = \Illuminate\Support\Facades\Auth::user();
+        
+        // Check if user is admin using the improved method
+        if (!$user->isAdmin()) {
             abort(403, 'Unauthorized action.');
         }
 
