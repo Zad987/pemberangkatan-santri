@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class UpdateUserRequest extends FormRequest
 {
@@ -12,7 +13,8 @@ class UpdateUserRequest extends FormRequest
     public function authorize(): bool
     {
         $user = $this->user();
-        return $user && $user->isAdmin();
+        // Admin bisa mengubah siapa saja; user biasa hanya boleh mengubah dirinya sendiri
+        return $user && ($user->isAdmin() || $user->id === (int) $this->route('id'));
     }
 
     /**
@@ -23,6 +25,8 @@ class UpdateUserRequest extends FormRequest
     public function rules(): array
     {
         $userId = $this->route('id');
+        $user = $this->user();
+        $isAdmin = $user && $user->isAdmin();
         
         return [
             'name' => [
@@ -31,7 +35,7 @@ class UpdateUserRequest extends FormRequest
                 'string',
                 'max:255',
                 'min:3',
-                'regex:/^[a-zA-Z\s\-\.]+$/'
+                'regex:/^[a-zA-Z\\s\\-\\.]+$/'
             ],
             'username' => [
                 'sometimes',
@@ -39,28 +43,31 @@ class UpdateUserRequest extends FormRequest
                 'string',
                 'max:255',
                 'min:3',
-                'unique:users,username,' . $userId,
+                Rule::unique('users', 'username')->ignore($userId),
                 'regex:/^[a-zA-Z0-9_]+$/'
             ],
-            'role' => [
-                'sometimes',
-                'required',
-                'in:induk,daerah,umum'
-            ],
-            'region_id' => [
-                'nullable',
-                'exists:regions,id'
-            ],
+            'role' => $isAdmin
+                ? ['sometimes', 'required', Rule::in(['induk', 'daerah', 'umum'])]
+                : ['prohibited'],
+            'region_id' => $isAdmin
+                ? ['nullable', 'exists:regions,id']
+                : ['prohibited'],
             'phone' => [
                 'nullable',
                 'string',
                 'max:20',
-                'regex:/^\+?[0-9\s\-()]*$/'
+                'regex:/^\\+?[0-9\\s\\-()]*$/'
             ],
-            'is_active' => [
+            'is_active' => $isAdmin
+                ? ['sometimes', 'boolean']
+                : ['prohibited'],
+            'password' => [
                 'sometimes',
-                'boolean'
-            ]
+                'required',
+                'string',
+                'min:8',
+                'confirmed',
+            ],
         ];
     }
 
@@ -84,8 +91,14 @@ class UpdateUserRequest extends FormRequest
             'username.regex' => 'Username hanya boleh mengandung huruf, angka, dan underscore.',
             'role.required' => 'Role wajib dipilih.',
             'role.in' => 'Role tidak valid.',
+            'role.prohibited' => 'Anda tidak boleh mengubah role.',
             'region_id.exists' => 'Daerah yang dipilih tidak ditemukan.',
+            'region_id.prohibited' => 'Anda tidak boleh mengubah wilayah.',
+            'is_active.prohibited' => 'Anda tidak boleh mengubah status aktif.',
             'phone.regex' => 'Format nomor telepon tidak valid.',
+            'password.required' => 'Password wajib diisi.',
+            'password.min' => 'Password minimal 8 karakter.',
+            'password.confirmed' => 'Konfirmasi password tidak sama.',
         ];
     }
 }

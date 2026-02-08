@@ -24,18 +24,18 @@
 
 <?php if (isset($component)) { $__componentOriginal436399e29d00ce6b8f47e38277d39536 = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginal436399e29d00ce6b8f47e38277d39536 = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.section-header','data' => ['title' => 'Data Peserta Keseluruhan','icon' => '📊']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.section-header','data' => ['title' => 'Data Peserta Keseluruhan','icon' => '&#128202;']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
 <?php $component->withName('section-header'); ?>
 <?php if ($component->shouldRender()): ?>
 <?php $__env->startComponent($component->resolveView(), $component->data()); ?>
 <?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
 <?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
 <?php endif; ?>
-<?php $component->withAttributes(['title' => 'Data Peserta Keseluruhan','icon' => '📊']); ?>
+<?php $component->withAttributes(['title' => 'Data Peserta Keseluruhan','icon' => '&#128202;']); ?>
     <div class="flex-actions" style="gap: 1rem; align-items: center;">
         <div style="position: relative; width: 100%; max-width: 350px;">
-            <input type="text" id="searchInput" class="form-input" placeholder="🔍 Cari nama peserta..." style="padding-left: 2.8rem; height: 48px; font-size: 0.95rem; border-radius: 24px;">
-            <span style="position: absolute; left: 1.2rem; top: 50%; transform: translateY(-50%); opacity: 0.6; font-size: 1.1rem;">🔍</span>
+            <input type="text" id="searchInput" class="form-input" placeholder="Cari nama peserta..." style="padding-left: 2.8rem; height: 48px; font-size: 0.95rem; border-radius: 24px;">
+            <span style="position: absolute; left: 1.2rem; top: 50%; transform: translateY(-50%); opacity: 0.6; font-size: 1.1rem;">&#128269;</span>
         </div>
         <div class="stats-summary" style="display: flex; gap: 1rem; font-size: 0.9rem; color: var(--text-muted);">
             <span>Total: <strong id="totalCount"><?php echo e($participants->count()); ?></strong></span>
@@ -57,7 +57,7 @@
 <!-- Statistics Cards -->
 <div class="stats-grid" style="margin-bottom: 2rem;">
     <div class="metric-card primary">
-        <div class="metric-icon">👥</div>
+        <div class="metric-icon">&#128101;</div>
         <div class="metric-content">
             <div class="metric-number"><?php echo e($participants->count()); ?></div>
             <div class="metric-label">Total Peserta</div>
@@ -65,7 +65,7 @@
     </div>
 
     <div class="metric-card success">
-        <div class="metric-icon">✅</div>
+        <div class="metric-icon">&#9989;</div>
         <div class="metric-content">
             <div class="metric-number"><?php echo e($participants->filter(fn($p) => $p->is_paid)->count()); ?></div>
             <div class="metric-label">Sudah Lunas</div>
@@ -73,7 +73,7 @@
     </div>
 
     <div class="metric-card warning">
-        <div class="metric-icon">⏳</div>
+        <div class="metric-icon">&#8987;</div>
         <div class="metric-content">
             <div class="metric-number"><?php echo e($participants->filter(fn($p) => !$p->is_paid)->count()); ?></div>
             <div class="metric-label">Belum Lunas</div>
@@ -81,7 +81,7 @@
     </div>
 
     <div class="metric-card info">
-        <div class="metric-icon">📍</div>
+        <div class="metric-icon">&#128205;</div>
         <div class="metric-content">
             <div class="metric-number"><?php echo e($participants->pluck('region.name')->unique()->count()); ?></div>
             <div class="metric-label">Wilayah</div>
@@ -103,9 +103,9 @@
         <table id="participantTable" class="participant-table">
             <thead>
                 <tr>
-                    <th style="width: 60%;">👤 Peserta</th>
-                    <th style="width: 20%;">🏷️ Kategori</th>
-                    <th style="width: 20%; text-align: center;">💰 Status Pembayaran</th>
+                    <th style="width: 60%;">&#128100; Peserta</th>
+                    <th style="width: 20%;">&#127991; Kategori</th>
+                    <th style="width: 20%; text-align: center;">&#128176; Status Pembayaran</th>
                 </tr>
             </thead>
             <tbody>
@@ -115,28 +115,28 @@
                         <div class="participant-info">
                             <div class="participant-name"><?php echo e($participant->name); ?></div>
                             <div class="participant-region">
-                                <span class="region-icon">📍</span>
-                                <?php echo e($participant->region->name ?? 'Tidak ada wilayah'); ?>
+                                <span class="region-icon">&#128205;</span>
+                                <?php echo e($participant->region?->name ?? 'Tidak ada wilayah'); ?>
 
                             </div>
                         </div>
                     </td>
                     <td>
                         <span class="category-badge">
-                            <span class="category-icon">🏷️</span>
-                            <?php echo e($participant->category->name ?? 'Tidak ada kategori'); ?>
+                            <span class="category-icon">&#127991;</span>
+                            <?php echo e($participant->category?->name ?? 'Tidak ada kategori'); ?>
 
                         </span>
                     </td>
                     <td style="text-align: center;">
                         <?php if($participant->latestPayment && $participant->latestPayment->status == 'lunas'): ?>
                             <span class="status-badge status-paid">
-                                <span class="status-icon">✅</span>
+                                <span class="status-icon">&#9989;</span>
                                 Lunas
                             </span>
                         <?php else: ?>
                             <span class="status-badge status-unpaid">
-                                <span class="status-icon">⏳</span>
+                                <span class="status-icon">&#8987;</span>
                                 Belum Lunas
                             </span>
                         <?php endif; ?>
@@ -145,7 +145,7 @@
                 <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
                 <tr>
                     <td colspan="3" class="empty-state">
-                        <div class="empty-state-icon">📭</div>
+                        <div class="empty-state-icon">&#128235;</div>
                         <div class="empty-state-text">Tidak ada data peserta</div>
                     </td>
                 </tr>
@@ -241,47 +241,15 @@
 }
 
 .participant-table thead th {
-    background: linear-gradient(135deg, #059669 0%, #0d9488 25%, #0f766e 50%, #115e59 75%, #134e4a 100%);
-    color: white;
-    padding: 1.5rem 1.75rem;
-    font-size: 0.95rem;
-    font-weight: 800;
+    background: var(--bg-accent);
+    color: var(--text-main);
+    padding: 1.25rem 1.5rem;
+    font-size: 0.9rem;
+    font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 1px;
+    letter-spacing: 0.5px;
     border: none;
-    box-shadow:
-        0 8px 25px rgba(5, 150, 105, 0.4),
-        0 4px 15px rgba(6, 182, 212, 0.2),
-        inset 0 1px 0 rgba(255, 255, 255, 0.2);
-    position: relative;
-    overflow: hidden;
-}
-
-.participant-table thead th::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
-    animation: shimmer 3s infinite;
-}
-
-@keyframes shimmer {
-    0% { left: -100%; }
-    100% { left: 100%; }
-}
-
-.participant-table thead th::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: 3px;
-    background: linear-gradient(90deg, #06b6d4, #0891b2, #0e7490, #155e75);
-    border-radius: 0 0 12px 12px;
+    border-bottom: 2px solid var(--border-light);
 }
 
 .participant-row {
@@ -478,6 +446,8 @@
     }
 }
 </style>
+
+<?php echo $__env->make('components.extra-responsive', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
 
 <script>
 document.getElementById('searchInput').addEventListener('keyup', function() {

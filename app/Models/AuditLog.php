@@ -93,6 +93,8 @@ class AuditLog extends Model
             'DELETE' => 'Menghapus data',
             'VIEW' => 'Melihat data',
             'LOGIN' => 'Masuk sistem',
+            'LOGIN_FAILED' => 'Login gagal',
+            'LOGIN_ERROR' => 'Error saat login',
             'LOGOUT' => 'Keluar sistem',
             'EXPORT' => 'Mengekspor data',
             'IMPORT' => 'Mengimpor data'

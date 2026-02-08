@@ -255,6 +255,12 @@ body.dark-mode .latest-item:hover {
     width: 100%;
     height: 100%;
     background: linear-gradient(135deg, rgba(0, 189, 31, 0.05), transparent 70%);
+    z-index: 0; /* biar tidak menutupi form */
+}
+
+/* pastikan isi di atas pseudo-element */
+.login-container > * {
+    position: relative;
     z-index: 1;
 }
 

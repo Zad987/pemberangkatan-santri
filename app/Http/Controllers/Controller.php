@@ -110,7 +110,8 @@ abstract class Controller extends BaseController
                 'user_id' => auth()->id() ?? 0,
                 'action' => $action,
                 'description' => $description,
-                'model' => $model,
+                // simpan nama model di kolom model_type sesuai migrasi
+                'model_type' => $model,
                 'model_id' => $modelId,
                 'ip_address' => request()->ip(),
                 'user_agent' => request()->userAgent(),

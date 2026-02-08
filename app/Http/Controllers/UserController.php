@@ -73,8 +73,8 @@ class UserController extends Controller
             $user = $this->userService->getUserById($id);
             $regions = Region::all();
 
-            // Authorization
-            if (Auth::user()->role !== 'induk' && Auth::id() !== (int)$id) {
+            // Authorization: admin boleh lihat semua, selain itu hanya diri sendiri
+            if (!Auth::user()->isAdmin() && Auth::id() !== (int)$id) {
                 abort(403, 'Unauthorized access to user details');
             }
 
@@ -200,8 +200,8 @@ class UserController extends Controller
     public function logoutDevice($id)
     {
         try {
-            // Authorization
-            if (Auth::user()->role !== 'induk' && Auth::id() !== (int)$id) {
+            // Authorization: admin boleh, lainnya hanya diri sendiri
+            if (!Auth::user()->isAdmin() && Auth::id() !== (int)$id) {
                 abort(403, 'Unauthorized to logout device');
             }
 

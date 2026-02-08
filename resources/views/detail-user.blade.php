@@ -8,7 +8,10 @@
 </div>
 
 <div class="section-card fade-in">
-    <h3 class="section-title-alt">👤 Profil Pengguna</h3>
+    <h3 class="section-title-alt">&#128100; Profil Pengguna</h3>
+    @php
+        $roleValue = $user->role instanceof \App\Enums\UserRole ? $user->role->value : $user->role;
+    @endphp
     <form method="POST" action="{{ route('user.update', $user->id) }}">
         @csrf
         @method('PUT')
@@ -23,9 +26,9 @@
             <div class="form-group">
                 <label for="role">Tipe Akun</label>
                 <select id="role" name="role" class="form-input {{ $errors->has('role') ? 'is-invalid' : '' }}" required onchange="toggleRegionField()">
-                    <option value="induk" {{ old('role', $user->role) == 'induk' ? 'selected' : '' }}>Admin</option>
-                    <option value="daerah" {{ old('role', $user->role) == 'daerah' ? 'selected' : '' }}>Daerah</option>
-                    <option value="umum" {{ old('role', $user->role) == 'umum' ? 'selected' : '' }}>Umum</option>
+                    <option value="induk" {{ old('role', $roleValue) == 'induk' ? 'selected' : '' }}>Admin</option>
+                    <option value="daerah" {{ old('role', $roleValue) == 'daerah' ? 'selected' : '' }}>Daerah</option>
+                    <option value="umum" {{ old('role', $roleValue) == 'umum' ? 'selected' : '' }}>Umum</option>
                 </select>
                 @if($errors->has('role'))
                     <small class="text-danger">{{ $errors->first('role') }}</small>
@@ -49,7 +52,7 @@
 </div>
 
 <div class="section-card fade-in">
-    <h3 class="section-title-alt">🔑 Keamanan</h3>
+    <h3 class="section-title-alt">&#128273; Keamanan</h3>
         <form method="POST" action="{{ route('user.password.update', $user->id) }}">
         @csrf
         @method('PUT')
@@ -72,7 +75,7 @@
 </div>
 
 <div class="section-card fade-in">
-    <h3 class="section-title-alt">⚙️ Opsi Lanjutan</h3>
+    <h3 class="section-title-alt">&#9881;&#65039; Opsi Lanjutan</h3>
     <div class="flex-actions">
         <form method="POST" action="{{ route('user.logout.device', $user->id) }}" style="flex: 1;">
             @csrf

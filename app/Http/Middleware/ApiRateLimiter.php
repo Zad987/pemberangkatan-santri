@@ -22,7 +22,7 @@ class ApiRateLimiter
             return $next($request);
         }
 
-        $key = $this->resolveRequestSignature($request);
+        $key = $this->resolveRequestSignature($request, $limiter);
         $maxAttempts = $this->getMaxAttempts($limiter);
         $decayMinutes = $this->getDecayMinutes($limiter);
 
@@ -33,7 +33,7 @@ class ApiRateLimiter
                 'error' => 'Too Many Requests',
                 'message' => "Too many requests. Please try again in {$seconds} seconds.",
                 'retry_after' => $seconds
-            ], 429);
+            ], 429)->header('Retry-After', $seconds);
         }
 
         RateLimiter::hit($key, $decayMinutes * 60);
@@ -46,13 +46,14 @@ class ApiRateLimiter
     /**
      * Resolve request signature.
      */
-    protected function resolveRequestSignature(Request $request): string
+    protected function resolveRequestSignature(Request $request, string $limiter): string
     {
         if ($user = $request->user()) {
-            return sha1($user->getAuthIdentifier());
+            return sha1($limiter . '|' . $user->getAuthIdentifier() . '|' . $request->ip());
         }
 
-        return sha1($request->ip() . '|' . $request->header('User-Agent'));
+        // Tambah path dan limiter agar batasan lebih ketat per-endpoint
+        return sha1($limiter . '|' . $request->ip() . '|' . $request->path() . '|' . $request->header('User-Agent'));
     }
 
     /**
@@ -61,7 +62,7 @@ class ApiRateLimiter
     protected function getMaxAttempts(string $limiter): int
     {
         return match($limiter) {
-            'login' => 5,           // 5 attempts per hour
+            'login' => 3,           // 3 attempts
             'api' => 60,            // 60 requests per minute
             'payment' => 20,        // 20 payment requests per minute
             'export' => 10,         // 10 exports per hour
@@ -75,7 +76,7 @@ class ApiRateLimiter
     protected function getDecayMinutes(string $limiter): int
     {
         return match($limiter) {
-            'login' => 60,          // 1 hour
+            'login' => 15,          // 15 minutes lockout
             'api' => 1,             // 1 minute
             'payment' => 1,         // 1 minute
             'export' => 60,         // 1 hour

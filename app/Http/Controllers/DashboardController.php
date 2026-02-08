@@ -88,56 +88,51 @@ class DashboardController extends Controller
     {
         try {
             $user = Auth::user();
+
+            // Ambil data langsung (tanpa cache) supaya daftar selalu up-to-date
+            $participants = Participant::with(['region', 'category', 'payments'])
+                ->where('region_id', $user->region_id)
+                ->get();
             
-            // Cache regional dashboard data
-            $cacheKey = 'daerah_dashboard_' . $user->id;
+            $totalParticipants = $participants->count();
+            $paidParticipants = $participants->filter(fn($p) => $p->is_paid)->count();
+            $unpaidParticipants = $totalParticipants - $paidParticipants;
             
-            $data = Cache::remember($cacheKey, 300, function () use ($user) {
-                // Use eager loading and proper indexing - include payments for accurate payment status
-                $participants = Participant::with(['region', 'category', 'payments'])
-                    ->where('region_id', $user->region_id)
-                    ->get();
-                
-                $totalParticipants = $participants->count();
-                $paidParticipants = $participants->filter(fn($p) => $p->is_paid)->count();
-                $unpaidParticipants = $totalParticipants - $paidParticipants;
-                
-                // Get categories with participant counts including payment status for this region
-                $participantsByCategory = Category::with(['participants' => function($query) use ($user) {
-                    $query->where('region_id', $user->region_id)->with(['payments']);
-                }])->get()->map(function ($category) {
-                    $category->participants_count = $category->participants->count();
-                    $category->paid_count = $category->participants->filter(fn($p) => $p->is_paid)->count();
-                    return $category;
-                });
-                
-                $paidPercentage = $totalParticipants > 0 ? round(($paidParticipants / $totalParticipants) * 100, 2) : 0;
-                $unpaidPercentage = 100 - $paidPercentage;
-                
-                // Revenue for this region only
-                $regionParticipantIds = $participants->pluck('id');
-                $totalRevenue = Payment::whereIn('participant_id', $regionParticipantIds)->sum('amount');
-                
-                // Latest participants from this region
-                $latestParticipants = Participant::with(['region', 'category', 'payments'])
-                    ->where('region_id', $user->region_id)
-                    ->latest()
-                    ->take(5)
-                    ->get();
-                
-                return [
-                    'regionParticipants' => $participants,
-                    'latestActivity' => $latestParticipants,
-                    'categories' => Category::all(),
-                    'totalParticipants' => $totalParticipants,
-                    'paidParticipants' => $paidParticipants,
-                    'unpaidParticipants' => $unpaidParticipants,
-                    'participantsByCategory' => $participantsByCategory,
-                    'paidPercentage' => $paidPercentage,
-                    'unpaidPercentage' => $unpaidPercentage,
-                    'totalRevenue' => $totalRevenue
-                ];
+            // Get categories dengan hitungan untuk region ini
+            $participantsByCategory = Category::with(['participants' => function($query) use ($user) {
+                $query->where('region_id', $user->region_id)->with(['payments']);
+            }])->get()->map(function ($category) {
+                $category->participants_count = $category->participants->count();
+                $category->paid_count = $category->participants->filter(fn($p) => $p->is_paid)->count();
+                return $category;
             });
+            
+            $paidPercentage = $totalParticipants > 0 ? round(($paidParticipants / $totalParticipants) * 100, 2) : 0;
+            $unpaidPercentage = 100 - $paidPercentage;
+            
+            // Revenue untuk region ini saja
+            $regionParticipantIds = $participants->pluck('id');
+            $totalRevenue = Payment::whereIn('participant_id', $regionParticipantIds)->sum('amount');
+            
+            // Peserta terbaru region ini
+            $latestParticipants = Participant::with(['region', 'category', 'payments'])
+                ->where('region_id', $user->region_id)
+                ->latest()
+                ->take(5)
+                ->get();
+
+            $data = [
+                'regionParticipants' => $participants,
+                'latestActivity' => $latestParticipants,
+                'categories' => Category::all(),
+                'totalParticipants' => $totalParticipants,
+                'paidParticipants' => $paidParticipants,
+                'unpaidParticipants' => $unpaidParticipants,
+                'participantsByCategory' => $participantsByCategory,
+                'paidPercentage' => $paidPercentage,
+                'unpaidPercentage' => $unpaidPercentage,
+                'totalRevenue' => $totalRevenue
+            ];
 
             Log::info('Regional dashboard accessed', [
                 'user_id' => $user->id,
