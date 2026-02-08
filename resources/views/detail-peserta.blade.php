@@ -136,49 +136,34 @@
     </form>
 </x-card>
 
-<x-section-header title="Riwayat Pembayaran" icon="📋" />
+<x-section-header title="Riwayat Pembayaran" icon="&#128221;" />
 
 <x-card>
-    <div class="table-responsive">
-        <table>
-            <thead>
-                <tr>
-                    <th>Tanggal</th>
-                    <th>Jumlah</th>
-                    <th>Status</th>
-                    <th>Catatan</th>
-                    <th>Aksi</th>
-                </tr>
-            </thead>
-            <tbody>
-                @forelse($participant->payments as $payment)
-                <tr>
-                    <td style="font-size:0.8rem;">{{ $payment->payment_date }}</td>
-                    <td style="font-weight:700;">Rp {{ number_format($payment->amount, 0, ',', '.') }}</td>
-                    <td>
-                        <span class="badge {{ $payment->status == 'lunas' ? 'badge-success' : 'badge-warning' }}">
-                            {{ $payment->status == 'lunas' ? '✓ Lunas' : '⏳ Menunggu' }}
-                        </span>
-                    </td>
-                    <td style="font-size:0.85rem; color:var(--text-muted);">{{ $payment->notes ?? '-' }}</td>
-                    <td>
-                        <form method="POST" action="{{ route('payment.destroy', $payment->id) }}" style="display: inline;" onsubmit="return confirmDelete(event, this)">
-                            @csrf
-                            @method('DELETE')
-                            <x-button buttonType="submit" style="background: var(--danger); padding: 0.25rem 0.5rem; font-size: 0.8rem;" class="delete-payment-btn">
-                                🗑️ Hapus
-                            </x-button>
-                        </form>
-                    </td>
-                </tr>
-                @empty
-                <x-empty-row :colspan="5">
-                    Belum ada riwayat pembayaran
-                </x-empty-row>
-                @endforelse
-            </tbody>
-        </table>
+    @forelse($participant->payments as $payment)
+    <div class="payment-item">
+        <div class="payment-meta">
+            <div class="payment-date">{{ \Carbon\Carbon::parse($payment->payment_date)->translatedFormat('d M Y') }}</div>
+            <div class="payment-amount">Rp {{ number_format($payment->amount, 0, ',', '.') }}</div>
+        </div>
+        <div class="payment-body">
+            <span class="badge {{ $payment->status == 'lunas' ? 'badge-success' : 'badge-warning' }}">
+                {{ $payment->status == 'lunas' ? '✓ Lunas' : '⏳ Menunggu' }}
+            </span>
+            <span class="payment-notes">{{ $payment->notes ?: 'Tidak ada catatan' }}</span>
+        </div>
+        <div class="payment-actions">
+            <form method="POST" action="{{ route('payment.destroy', $payment->id) }}" onsubmit="return confirmDelete(event, this)">
+                @csrf
+                @method('DELETE')
+                <x-button buttonType="submit" class="delete-payment-btn" style="background: var(--danger); padding: 0.35rem 0.75rem; font-size: 0.85rem;">
+                    🗑️ Hapus
+                </x-button>
+            </form>
+        </div>
     </div>
+    @empty
+        <div class="empty-payments">Belum ada riwayat pembayaran</div>
+    @endforelse
 </x-card>
 
 <div class="mt-4 fade-in flex-actions">
@@ -213,13 +198,13 @@
 }
 
 @keyframes spin {
-    to { transform: rotate(360deg); }
-}
-
-.btn-loading {
-    position: relative;
-    pointer-events: none;
-}
+      to { transform: rotate(360deg); }
+  }
+  
+  .btn-loading {
+      position: relative;
+      pointer-events: none;
+  }
 
 .btn-loading .btn-text {
     visibility: hidden;
@@ -238,6 +223,52 @@
     border-top-color: currentColor;
     border-radius: 50%;
     animation: spin 1s linear infinite;
+}
+
+/* Payment history cards */
+.payment-item {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 0.5rem 1rem;
+    padding: 1rem;
+    border: 1px solid var(--border-light);
+    border-radius: 12px;
+    background: var(--bg-secondary);
+    margin-bottom: 0.75rem;
+    box-shadow: var(--shadow-sm);
+}
+.payment-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+.payment-date {
+    font-weight: 700;
+    color: var(--text-main);
+}
+.payment-amount {
+    font-size: 1.05rem;
+    font-weight: 800;
+    color: var(--primary);
+}
+.payment-body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+}
+.payment-notes {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+}
+.payment-actions {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+.empty-payments {
+    text-align: center;
+    padding: 1rem;
+    color: var(--text-muted);
 }
 </style>
 

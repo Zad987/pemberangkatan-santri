@@ -265,14 +265,14 @@
 
 <?php if (isset($component)) { $__componentOriginal436399e29d00ce6b8f47e38277d39536 = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginal436399e29d00ce6b8f47e38277d39536 = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.section-header','data' => ['title' => 'Riwayat Pembayaran','icon' => '📋']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.section-header','data' => ['title' => 'Riwayat Pembayaran','icon' => '&#128221;']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
 <?php $component->withName('section-header'); ?>
 <?php if ($component->shouldRender()): ?>
 <?php $__env->startComponent($component->resolveView(), $component->data()); ?>
 <?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
 <?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
 <?php endif; ?>
-<?php $component->withAttributes(['title' => 'Riwayat Pembayaran','icon' => '📋']); ?>
+<?php $component->withAttributes(['title' => 'Riwayat Pembayaran','icon' => '&#128221;']); ?>
 <?php echo $__env->renderComponent(); ?>
 <?php endif; ?>
 <?php if (isset($__attributesOriginal436399e29d00ce6b8f47e38277d39536)): ?>
@@ -294,45 +294,35 @@
 <?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
 <?php endif; ?>
 <?php $component->withAttributes([]); ?>
-    <div class="table-responsive">
-        <table>
-            <thead>
-                <tr>
-                    <th>Tanggal</th>
-                    <th>Jumlah</th>
-                    <th>Status</th>
-                    <th>Catatan</th>
-                    <th>Aksi</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php $__empty_1 = true; $__currentLoopData = $participant->payments; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $payment): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
-                <tr>
-                    <td style="font-size:0.8rem;"><?php echo e($payment->payment_date); ?></td>
-                    <td style="font-weight:700;">Rp <?php echo e(number_format($payment->amount, 0, ',', '.')); ?></td>
-                    <td>
-                        <span class="badge <?php echo e($payment->status == 'lunas' ? 'badge-success' : 'badge-warning'); ?>">
-                            <?php echo e($payment->status == 'lunas' ? '✓ Lunas' : '⏳ Menunggu'); ?>
+    <?php $__empty_1 = true; $__currentLoopData = $participant->payments; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $payment): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
+    <div class="payment-item">
+        <div class="payment-meta">
+            <div class="payment-date"><?php echo e(\Carbon\Carbon::parse($payment->payment_date)->translatedFormat('d M Y')); ?></div>
+            <div class="payment-amount">Rp <?php echo e(number_format($payment->amount, 0, ',', '.')); ?></div>
+        </div>
+        <div class="payment-body">
+            <span class="badge <?php echo e($payment->status == 'lunas' ? 'badge-success' : 'badge-warning'); ?>">
+                <?php echo e($payment->status == 'lunas' ? '✓ Lunas' : '⏳ Menunggu'); ?>
 
-                        </span>
-                    </td>
-                    <td style="font-size:0.85rem; color:var(--text-muted);"><?php echo e($payment->notes ?? '-'); ?></td>
-                    <td>
-                        <form method="POST" action="<?php echo e(route('payment.destroy', $payment->id)); ?>" style="display: inline;" onsubmit="return confirmDelete(event, this)">
-                            <?php echo csrf_field(); ?>
-                            <?php echo method_field('DELETE'); ?>
-                            <?php if (isset($component)) { $__componentOriginald0f1fd2689e4bb7060122a5b91fe8561 = $component; } ?>
+            </span>
+            <span class="payment-notes"><?php echo e($payment->notes ?: 'Tidak ada catatan'); ?></span>
+        </div>
+        <div class="payment-actions">
+            <form method="POST" action="<?php echo e(route('payment.destroy', $payment->id)); ?>" onsubmit="return confirmDelete(event, this)">
+                <?php echo csrf_field(); ?>
+                <?php echo method_field('DELETE'); ?>
+                <?php if (isset($component)) { $__componentOriginald0f1fd2689e4bb7060122a5b91fe8561 = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginald0f1fd2689e4bb7060122a5b91fe8561 = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.button','data' => ['buttonType' => 'submit','style' => 'background: var(--danger); padding: 0.25rem 0.5rem; font-size: 0.8rem;','class' => 'delete-payment-btn']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.button','data' => ['buttonType' => 'submit','class' => 'delete-payment-btn','style' => 'background: var(--danger); padding: 0.35rem 0.75rem; font-size: 0.85rem;']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
 <?php $component->withName('button'); ?>
 <?php if ($component->shouldRender()): ?>
 <?php $__env->startComponent($component->resolveView(), $component->data()); ?>
 <?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
 <?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
 <?php endif; ?>
-<?php $component->withAttributes(['buttonType' => 'submit','style' => 'background: var(--danger); padding: 0.25rem 0.5rem; font-size: 0.8rem;','class' => 'delete-payment-btn']); ?>
-                                🗑️ Hapus
-                             <?php echo $__env->renderComponent(); ?>
+<?php $component->withAttributes(['buttonType' => 'submit','class' => 'delete-payment-btn','style' => 'background: var(--danger); padding: 0.35rem 0.75rem; font-size: 0.85rem;']); ?>
+                    🗑️ Hapus
+                 <?php echo $__env->renderComponent(); ?>
 <?php endif; ?>
 <?php if (isset($__attributesOriginald0f1fd2689e4bb7060122a5b91fe8561)): ?>
 <?php $attributes = $__attributesOriginald0f1fd2689e4bb7060122a5b91fe8561; ?>
@@ -342,35 +332,12 @@
 <?php $component = $__componentOriginald0f1fd2689e4bb7060122a5b91fe8561; ?>
 <?php unset($__componentOriginald0f1fd2689e4bb7060122a5b91fe8561); ?>
 <?php endif; ?>
-                        </form>
-                    </td>
-                </tr>
-                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
-                <?php if (isset($component)) { $__componentOriginal4eed7548ad3bd4d0709494afb2239601 = $component; } ?>
-<?php if (isset($attributes)) { $__attributesOriginal4eed7548ad3bd4d0709494afb2239601 = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.empty-row','data' => ['colspan' => 5]] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
-<?php $component->withName('empty-row'); ?>
-<?php if ($component->shouldRender()): ?>
-<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
-<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
-<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
-<?php endif; ?>
-<?php $component->withAttributes(['colspan' => 5]); ?>
-                    Belum ada riwayat pembayaran
-                 <?php echo $__env->renderComponent(); ?>
-<?php endif; ?>
-<?php if (isset($__attributesOriginal4eed7548ad3bd4d0709494afb2239601)): ?>
-<?php $attributes = $__attributesOriginal4eed7548ad3bd4d0709494afb2239601; ?>
-<?php unset($__attributesOriginal4eed7548ad3bd4d0709494afb2239601); ?>
-<?php endif; ?>
-<?php if (isset($__componentOriginal4eed7548ad3bd4d0709494afb2239601)): ?>
-<?php $component = $__componentOriginal4eed7548ad3bd4d0709494afb2239601; ?>
-<?php unset($__componentOriginal4eed7548ad3bd4d0709494afb2239601); ?>
-<?php endif; ?>
-                <?php endif; ?>
-            </tbody>
-        </table>
+            </form>
+        </div>
     </div>
+    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
+        <div class="empty-payments">Belum ada riwayat pembayaran</div>
+    <?php endif; ?>
  <?php echo $__env->renderComponent(); ?>
 <?php endif; ?>
 <?php if (isset($__attributesOriginal53747ceb358d30c0105769f8471417f6)): ?>
@@ -432,13 +399,13 @@
 }
 
 @keyframes spin {
-    to { transform: rotate(360deg); }
-}
-
-.btn-loading {
-    position: relative;
-    pointer-events: none;
-}
+      to { transform: rotate(360deg); }
+  }
+  
+  .btn-loading {
+      position: relative;
+      pointer-events: none;
+  }
 
 .btn-loading .btn-text {
     visibility: hidden;
@@ -457,6 +424,52 @@
     border-top-color: currentColor;
     border-radius: 50%;
     animation: spin 1s linear infinite;
+}
+
+/* Payment history cards */
+.payment-item {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 0.5rem 1rem;
+    padding: 1rem;
+    border: 1px solid var(--border-light);
+    border-radius: 12px;
+    background: var(--bg-secondary);
+    margin-bottom: 0.75rem;
+    box-shadow: var(--shadow-sm);
+}
+.payment-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+.payment-date {
+    font-weight: 700;
+    color: var(--text-main);
+}
+.payment-amount {
+    font-size: 1.05rem;
+    font-weight: 800;
+    color: var(--primary);
+}
+.payment-body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+}
+.payment-notes {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+}
+.payment-actions {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+.empty-payments {
+    text-align: center;
+    padding: 1rem;
+    color: var(--text-muted);
 }
 </style>
 
@@ -537,4 +550,5 @@
 </script>
 
 <?php $__env->stopSection(); ?>
+
 <?php echo $__env->make('layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\test\apk\mangkatan\resources\views/detail-peserta.blade.php ENDPATH**/ ?>
