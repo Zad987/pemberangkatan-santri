@@ -11,7 +11,7 @@
     </div>
     <div class="stat-card">
         <div class="stat-icon-bg">✅</div>
-        <span class="stat-number">{{ $participants->filter(fn($p) => $p->latestPayment && $p->latestPayment->status == 'lunas')->count() }}</span>
+        <span class="stat-number">{{ $participants->filter(fn($p) => $p->latestPayment && $p->latestPayment->status === \App\Enums\PaymentStatus::LUNAS)->count() }}</span>
         <span class="stat-label">Sudah Lunas</span>
     </div>
 </div>
@@ -35,7 +35,7 @@
                         <div class="user-region">{{ $participant->region->name ?? '-' }} • {{ $participant->category->name ?? '-' }}</div>
                     </td>
                     <td>
-                        @if($participant->latestPayment && $participant->latestPayment->status == 'lunas')
+                        @if($participant->latestPayment && $participant->latestPayment->status === \App\Enums\PaymentStatus::LUNAS)
                             <span class="badge badge-success">✓ Lunas</span>
                         @else
                             <span class="badge badge-danger">✗ Belum</span>

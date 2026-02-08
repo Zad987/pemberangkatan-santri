@@ -83,7 +83,7 @@
                         </span>
                     </td>
                     <td style="text-align: center;">
-                        @if($participant->latestPayment && $participant->latestPayment->status == 'lunas')
+                        @if($participant->latestPayment && $participant->latestPayment->status === \App\Enums\PaymentStatus::LUNAS)
                             <span class="status-badge status-paid">
                                 <span class="status-icon">&#9989;</span>
                                 Lunas

@@ -48,7 +48,7 @@
                         <div style="font-size:0.75rem; color:var(--text-muted);">{{ $participant->region->name ?? '-' }}</div>
                     </td>
                     <td>
-                        @if($participant->latestPayment && $participant->latestPayment->status == 'lunas')
+                        @if($participant->latestPayment && $participant->latestPayment->status === \App\Enums\PaymentStatus::LUNAS)
                             <span class="badge badge-success">Lunas</span>
                         @else
                             <span class="badge badge-danger">Belum</span>

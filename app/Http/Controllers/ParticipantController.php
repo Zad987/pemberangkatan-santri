@@ -365,7 +365,7 @@ class ParticipantController extends Controller
                 return redirect()->back()->withErrors($validator)->withInput();
             }
 
-            // Calculate totals based on existing payments
+            // Calculate totals based on existing payments (guard kategori hilang)
             $categoryPrice = $participant->category->price ?? 0;
             $totalPaid = $participant->payments->sum('amount');
             $remainingBalance = max(0, $categoryPrice - $totalPaid);
@@ -402,7 +402,7 @@ class ParticipantController extends Controller
 
             // Create payment record with appropriate status
             $participant->refresh(); // Refresh to include the new payment in calculation
-            $isNowFullyPaid = ($participant->total_paid + $amount) >= $participant->category->price;
+            $isNowFullyPaid = ($participant->total_paid + $amount) >= $categoryPrice;
 
             $payment = Payment::create([
                 'participant_id' => $participant->id,

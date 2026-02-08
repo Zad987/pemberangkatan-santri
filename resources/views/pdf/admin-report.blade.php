@@ -346,7 +346,7 @@
                         <td>{{ $participant->region->name ?? '-' }}</td>
                         <td>{{ $participant->category->name ?? '-' }}</td>
                         <td style="text-align: right;">
-                            @if($participant->latestPayment && $participant->latestPayment->status === 'lunas')
+                            @if($participant->latestPayment && $participant->latestPayment->status === \App\Enums\PaymentStatus::LUNAS)
                                 Rp {{ number_format($participant->category->price ?? 0, 0, ',', '.') }}
                             @else
                                 Rp {{ number_format($participant->latestPayment->amount ?? 0, 0, ',', '.') }}
@@ -356,7 +356,7 @@
                             @php
                                 $categoryPrice = $participant->category->price ?? 0;
                                 $paidAmount = 0;
-                                if($participant->latestPayment && $participant->latestPayment->status === 'lunas') {
+                                if($participant->latestPayment && $participant->latestPayment->status === \App\Enums\PaymentStatus::LUNAS) {
                                     $remaining = 0;
                                 } else {
                                     $paidAmount = $participant->latestPayment->amount ?? 0;
@@ -366,7 +366,7 @@
                             Rp {{ number_format($remaining, 0, ',', '.') }}
                         </td>
                         <td>
-                            @if($participant->latestPayment && $participant->latestPayment->status === 'lunas')
+                            @if($participant->latestPayment && $participant->latestPayment->status === \App\Enums\PaymentStatus::LUNAS)
                                 <span class="badge badge-lunas">LUNAS</span>
                             @else
                                 <span class="badge badge-belum">BELUM</span>
@@ -410,7 +410,7 @@
                     $regionTotal = $region->participants->count();
                     $regionPaid = 0;
                     foreach($region->participants as $participant) {
-                        if($participant->latestPayment && $participant->latestPayment->status === 'lunas') {
+                        if($participant->latestPayment && $participant->latestPayment->status === \App\Enums\PaymentStatus::LUNAS) {
                             $regionPaid++;
                         }
                     }
@@ -460,7 +460,7 @@
                     $categoryTotal = $category->participants->count();
                     $categoryPaid = 0;
                     foreach($category->participants as $participant) {
-                        if($participant->latestPayment && $participant->latestPayment->status === 'lunas') {
+                        if($participant->latestPayment && $participant->latestPayment->status === \App\Enums\PaymentStatus::LUNAS) {
                             $categoryPaid++;
                         }
                     }

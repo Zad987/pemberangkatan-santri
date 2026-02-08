@@ -130,7 +130,7 @@ class Participant extends Model
             'amount' => $paymentAmount,
             'status' => PaymentStatus::LUNAS,
             'notes' => $notes,
-            'paid_at' => now(),
+            'payment_date' => now()->toDateString(),
         ]);
     }
 
@@ -140,7 +140,7 @@ class Participant extends Model
             'amount' => 0,
             'status' => PaymentStatus::BELUM,
             'notes' => 'Ditandai sebagai belum bayar',
-            'paid_at' => null,
+            'payment_date' => now()->toDateString(),
         ]);
     }
 }

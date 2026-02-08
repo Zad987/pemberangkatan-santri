@@ -6,7 +6,16 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta name="description" content="Sistem Manajemen Peserta PPMHA">
     <title>@yield('title', 'PPMHA - Sistem Manajemen Peserta')</title>
-    <link rel="stylesheet" href="{{ asset('css/style.css?v=' . time()) }}">
+    @php
+        $cssVersion = file_exists(public_path('css/style.css')) ? filemtime(public_path('css/style.css')) : time();
+    @endphp
+    <link rel="preload" href="{{ asset('css/style.css?v=' . $cssVersion) }}" as="style">
+    <link rel="stylesheet" href="{{ asset('css/style.css?v=' . $cssVersion) }}" id="main-css">
+    <style>
+        /* Anti-FOUC: sembunyikan sampai CSS siap, lalu smooth fade-in */
+        body { opacity: 0; transition: opacity .15s ease; }
+        body.css-ready { opacity: 1; }
+    </style>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body class="@yield('body_class', '')">
@@ -209,6 +218,18 @@
         <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp">
     </a>
     
+    <script>
+        // Tandai CSS sudah siap begitu stylesheet selesai dimuat
+        const cssLink = document.getElementById('main-css');
+        function reveal() { document.body.classList.add('css-ready'); }
+        if (cssLink.sheet) {
+            reveal();
+        } else {
+            cssLink.addEventListener('load', reveal);
+        }
+        // Fallback: tetap tampil setelah 1s jika load event tidak terpanggil
+        setTimeout(reveal, 1000);
+    </script>
     <script src="{{ asset('js/script.js') }}"></script>
 </body>
 </html>

@@ -142,12 +142,14 @@
     @forelse($participant->payments as $payment)
     <div class="payment-item">
         <div class="payment-meta">
-            <div class="payment-date">{{ \Carbon\Carbon::parse($payment->payment_date)->translatedFormat('d M Y') }}</div>
+            <div class="payment-date">
+                {{ $payment->payment_date ? $payment->payment_date->translatedFormat('d M Y') : '-' }}
+            </div>
             <div class="payment-amount">Rp {{ number_format($payment->amount, 0, ',', '.') }}</div>
         </div>
         <div class="payment-body">
-            <span class="badge {{ $payment->status == 'lunas' ? 'badge-success' : 'badge-warning' }}">
-                {{ $payment->status == 'lunas' ? '✓ Lunas' : '⏳ Menunggu' }}
+            <span class="badge {{ $payment->status === \App\Enums\PaymentStatus::LUNAS ? 'badge-success' : 'badge-warning' }}">
+                {{ $payment->status === \App\Enums\PaymentStatus::LUNAS ? '✓ Lunas' : '⏳ Menunggu' }}
             </span>
             <span class="payment-notes">{{ $payment->notes ?: 'Tidak ada catatan' }}</span>
         </div>
